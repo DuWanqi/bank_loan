@@ -1,0 +1,10 @@
+{% for loan in pending_loans %}
+<div class="card">
+  <h3>申请人：{{ loan.applicant.username }}</h3>
+  <p>金额：{{ loan.amount }}元</p>
+  <form method="post" action="{% url 'approve_loan' loan.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn-approve">批准</button>
+  </form>
+</div>
+{% endfor %}

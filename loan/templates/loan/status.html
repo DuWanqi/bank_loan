@@ -1,0 +1,13 @@
+<!-- loan/templates/loan/status.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>贷款申请状态</h2>
+  <div class="card">
+    <div class="card-body">
+      <p>金额：{{ loan.amount }}元</p>
+      <p>状态：<span class="badge bg-{{ loan.status_color }}">{{ loan.get_status_display }}</span></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

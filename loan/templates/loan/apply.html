@@ -1,0 +1,105 @@
+<!-- templates/loan/apply.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <!-- 贷款申请卡片 -->
+      <div class="card shadow-lg">
+        <!-- 标题 -->
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0">贷款申请表</h3>
+          <small class="d-block mt-2">尊敬的 {{ request.user.phone }}，请填写以下信息</small>
+        </div>
+
+        <!-- 表单主体 -->
+        <form method="post" class="card-body"action="{% url 'loan:loan_apply' %}">
+          {% csrf_token %}
+
+          <!-- 全局错误消息 -->
+          {% if messages %}
+            <div class="alert alert-danger mb-4">
+              {% for message in messages %}
+                {{ message }}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <!-- 贷款金额 -->
+          <div class="mb-4">
+            <label for="id_amount" class="form-label">贷款金额（元）</label>
+            <input 
+              type="number" 
+              name="amount" 
+              class="form-control {% if form.amount.errors %}is-invalid{% endif %}" 
+              id="id_amount"
+              placeholder="请输入1000-1000000之间的整数"
+              min="1000" 
+              max="1000000"
+              required
+            >
+            {% for error in form.amount.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- 贷款期限 -->
+          <div class="mb-4">
+            <label for="id_term" class="form-label">贷款期限（月）</label>
+            <select 
+              name="term" 
+              class="form-select {% if form.term.errors %}is-invalid{% endif %}" 
+              id="id_term"
+              required
+            >
+              <option value="">请选择期限</option>
+              <option value="{{ 6 }}">6个月</option> 
+              <option value="{{ 12 }}">12个月</option>
+              <option value="{{ 24 }}">24个月</option>
+            </select>
+            {% for error in form.term.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- 贷款用途 -->
+          <div class="mb-4">
+            <label for="id_purpose" class="form-label">贷款用途</label>
+            <textarea 
+              name="purpose" 
+              class="form-control {% if form.purpose.errors %}is-invalid{% endif %}" 
+              id="id_purpose"
+              rows="3"
+              placeholder="请详细描述资金用途（50-200字）"
+              maxlength="200"
+              required
+            ></textarea>
+            {% for error in form.purpose.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- 提交按钮 -->
+          <button type="submit" class="btn btn-primary w-100 py-2">
+            <i class="bi bi-send-check me-2"></i>提交申请
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<!-- 可选：自定义样式 -->
+<style>
+.card-header {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+.shadow-lg {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+</style>
+{% endblock %}

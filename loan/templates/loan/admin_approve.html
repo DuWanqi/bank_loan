@@ -1,0 +1,52 @@
+<!-- loan/templates/loan/approve.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">贷款审批 - {{ loan.applicant.username }}</h2>
+  
+  <!-- 权限验证（修正为Django标准权限校验） -->
+  {% if user.is_staff %}
+    <div class="card shadow">
+      <div class="card-body">
+        <!-- 贷款详情 -->
+        <dl class="row">
+          <dt class="col-sm-3">金额</dt>
+          <dd class="col-sm-9">{{ loan.amount }} 元</dd>
+          <dt class="col-sm-3">用途</dt>
+          <dd class="col-sm-9">{{ loan.purpose|default:"未填写用途" }}</dd>  <!-- 添加默认值 -->
+          <dt class="col-sm-3">当前状态</dt>
+          <dd class="col-sm-9">
+            <span class="badge bg-{{ loan.status_color }}">  <!-- 使用模型属性 -->
+              {{ loan.get_status_display }}
+            </span>
+          </dd>
+        </dl>
+
+        <!-- 审批操作表单（增加拒绝原因字段） -->
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="rejectReason" class="form-label">拒绝原因（可选）</label>
+            <textarea name="reject_reason" class="form-control" id="rejectReason" rows="2"></textarea>
+          </div>
+          
+          <div class="btn-group">
+            <button type="submit" name="action" value="approve" class="btn btn-success">
+              <i class="bi bi-check-circle me-1"></i>批准
+            </button>
+            <button type="submit" name="action" value="reject" class="btn btn-danger">
+              <i class="bi bi-x-circle me-1"></i>拒绝
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-danger">
+      <i class="bi bi-shield-lock me-2"></i>权限不足，仅限管理员操作！
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
